@@ -30,13 +30,6 @@ class Edit extends \Magiccart\Lookbook\Controller\Adminhtml\Action
                 $resultRedirect = $this->_resultRedirectFactory->create();
 
                 return $resultRedirect->setPath('*/*/');
-            } else {
-                if($model->getData('config')){
-                    $tmp = $this->json->unserialize($model->getData('config'));
-                    if(is_array($tmp)){
-                        $model->addData($tmp);
-                    }
-                }
             }
         }
 

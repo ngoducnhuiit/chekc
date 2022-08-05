@@ -73,75 +73,12 @@ class Save extends \Magiccart\Lookbook\Controller\Adminhtml\Action
                     }
                 }
             }
-
-            if (isset($_FILES['marker']) && isset($_FILES['marker']['name']) && strlen($_FILES['marker']['name'])) {
-                /*
-                 * Save image upload
-                 */
-                try {
-                    $uploader = $this->_objectManager->create(
-                        'Magento\MediaStorage\Model\File\Uploader',
-                        ['fileId' => 'marker']
-                    );
-                    $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
-
-                    /** @var \Magento\Framework\Image\Adapter\AdapterInterface $imageAdapter */
-                    $imageAdapter = $this->_objectManager->get('Magento\Framework\Image\AdapterFactory')->create();
-
-                    $uploader->addValidateCallback('lookbook_marker', $imageAdapter, 'validateUploadFile');
-                    $uploader->setAllowRenameFiles(true);
-                    $uploader->setFilesDispersion(true);
-
-                    /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
-                    $mediaDirectory = $this->_objectManager->get('Magento\Framework\Filesystem')
-                        ->getDirectoryRead(DirectoryList::MEDIA);
-                    $result = $uploader->save(
-                        $mediaDirectory->getAbsolutePath('magiccart/lookbook/marker/')
-                    );
-                    $data['marker'] = 'magiccart/lookbook/marker'.$result['file'];
-                } catch (\Exception $e) {
-                    if ($e->getCode() == 0) {
-                        $this->messageManager->addError($e->getMessage());
-                    }
-                }
-            } else {
-                if (isset($data['marker']) && isset($data['marker']['value'])) {
-                    if (isset($data['marker']['delete'])) {
-                        $data['marker'] = null;
-                        $data['delete_marker'] = true;
-                    } elseif (isset($data['marker']['value'])) {
-                        $data['marker'] = $data['marker']['value'];
-                    } else {
-                        $data['marker'] = null;
-                    }
-                }
-            }
-
-            $unsetData = [
-                'form_key',
-                'lookbook_id',
-                'title',
-                'identifier',
-                'link',
-                'image',
-                'content',
-                'product_id',
-                'classes',
-                'stores',
-                'options',
-                'order',
-                'description',
-                'customer_group_id',
-                'priority',
-                'status',
-            ];
-            $config = $data;
-            foreach ($unsetData as $key) {
-                unset($config[$key]);
-            }
-
-            $data['config'] = $this->json->serialize($config);
-
+            /** @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate */
+            // $localeDate = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\TimezoneInterface');
+            // $data['start_time'] = $localeDate->date($data['start_time'])->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i');
+            // $data['end_time'] = $localeDate->date($data['end_time'])->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i');
+            // print_r($data);
+            // die('abc');
             if(isset($data['stores'])) $data['stores'] = implode(',', $data['stores']);
             $model->setData($data)
                 ->setStoreViewId($storeViewId);
